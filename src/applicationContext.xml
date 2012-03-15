@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+          http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+">
+    <bean name="perfLogInterceptor" class="spring1.util.PerformanceLoggingInterceptor"/>
+    <bean name="proxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <property name="beanNames">
+            <list>
+                <value>reader</value>
+                <value>writer</value>
+            </list>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>perfLogInterceptor</value>
+            </list>
+        </property>
+    </bean>
+    
+	<!-- Configure copier class using constructor injection of components -->
+    <bean id="copier" class="spring1.Copier">
+        <constructor-arg name="reader" ref="reader" />
+        <constructor-arg name="writer" ref="writer" />
+    </bean>
+    
+	<!-- Configure copier class using setter injection of components
+	<bean id="copier" class="spring1.Copier">
+		<property name="reader" ref="reader" />
+		<property name="writer" ref="writer" />
+	</bean>
+         -->
+    
+	<!-- 
+            Configure components of Copier for injection. When you want to
+            make a change, change the class name.
+        -->
+    <bean id="reader" class="spring1.KeyboardReader" />
+    <bean id="writer" class="spring1.ConsoleWriter" />
+
+</beans>
