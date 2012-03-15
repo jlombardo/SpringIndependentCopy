@@ -15,7 +15,18 @@
           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 ">
+    <!--
+        Configure Spring AOP (cross-cutting concerns) to perform performance
+        logging on selected methods. This keeps the monitoring code out of
+        the service classes and makes turing it on/off for dev/production easy.
+    -->
     <bean name="perfLogInterceptor" class="spring1.util.PerformanceLoggingInterceptor"/>
+    <aop:config>
+        <aop:pointcut id="allServiceMethods" expression="execution(* spring1.*.*(..))"/>
+        <aop:advisor pointcut-ref="allServiceMethods" advice-ref="perfLogInterceptor" order="2"/>
+    </aop:config>
+    
+    <!-- Alternative to <aop:config>
     <bean name="proxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
         <property name="beanNames">
             <list>
@@ -29,6 +40,7 @@
             </list>
         </property>
     </bean>
+    -->
     
 	<!-- Configure copier class using constructor injection of components -->
     <bean id="copier" class="spring1.Copier">

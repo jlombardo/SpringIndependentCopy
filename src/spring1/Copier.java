@@ -11,7 +11,7 @@ package spring1;
  * Liskov Substitution Principle.
  * 
  * @author  Jim Lombardo, WCTC Lead Java Instructor
- * @version 1.02
+ * @version 1.03
  * @see     Driver for run instructions and info about design rules
  * @see     DependentCopy project for a poor design
  */
@@ -20,6 +20,9 @@ public class Copier {
     private Reader reader;
     private Writer writer;
 
+    /** Must have a default constructor for the Spring <aop:config> */
+    public Copier() {}
+    
     // Provide this to demonstrate Spring constructor injection
     public Copier( Reader reader, Writer writer ) {
             this.reader = reader;
