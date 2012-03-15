@@ -8,8 +8,9 @@ import org.aopalliance.intercept.MethodInvocation;
  * This class is an implementation of a Spring <code>Interceptor</code> and
  * is used to process AOP arround advice for methods configured in Spring.
  * 
- * @author Original version by Ben Oday, ben.oday@initekconsulting.com. 
- *         Modifications by Jim Lombardo
+ * @author  Original version by Ben Oday, ben.oday@initekconsulting.com. 
+ *          Modifications by Jim Lombardo
+ * @version 1.00
  */
 public class PerformanceLoggingInterceptor implements MethodInterceptor {
 
