@@ -3,6 +3,7 @@ package spring1.util;
 import java.util.concurrent.ConcurrentHashMap;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.util.StopWatch;
 
 /**
  * This class is an implementation of a Spring <code>Interceptor</code> and
@@ -13,11 +14,10 @@ import org.aopalliance.intercept.MethodInvocation;
  * @version 1.00
  */
 public class PerformanceLoggingInterceptor implements MethodInterceptor {
-
     private static ConcurrentHashMap<String, MethodStats> methodStats =
             new ConcurrentHashMap<String, MethodStats>();
     private static long statLogFrequency = 1;
-    private static long methodWarningThreshold = 5000;
+    private static long methodWarningThreshold = 5000; // ms
     private static final String WARN_MSG =
             "WARNING: SLOW -- ";
     private static final String PERF_MSG =
@@ -26,13 +26,17 @@ public class PerformanceLoggingInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation method) throws Throwable {
-        long startTime = System.currentTimeMillis();
+        StopWatch sw = new StopWatch();
+        sw.start();
         
         try {
             return method.proceed();
         } finally {
-            updateStats(method.getMethod().getName(),
-                    (System.currentTimeMillis() - startTime));
+            sw.stop();
+            String source = 
+                    method.getMethod().getDeclaringClass().getSimpleName();
+            source += "#" + method.getMethod().getName();
+            updateStats(source, sw.getTotalTimeMillis());
         }
         
     }
@@ -71,7 +75,8 @@ public class PerformanceLoggingInterceptor implements MethodInterceptor {
         }
     }
 
-    class MethodStats {
+    // Inner class for convenience -- maintains performance history
+    private class MethodStats {
 
         public String methodName;
         public long count;
